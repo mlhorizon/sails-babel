@@ -1,0 +1,31 @@
+{
+  "name": "withu.cc",
+  "private": true,
+  "version": "0.0.0",
+  "description": "a Sails-gulp-es6-babel--scss-swig Application",
+  "keywords": [
+    "sails",
+    "gulp",
+    "es6",
+    "babel",
+    "scss"
+  ],
+  "dependencies": {
+    
+  },
+  "scripts": {
+    "debug": "node debug app.js",
+    "start": "node app.js"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cloud/withu.cc.git"
+  },
+  "author": "cloud",
+  "license": "",
+  "devDependencies": {
+    "sails-mongo": "^0.11.2",
+    "swig": "^1.4.2"
+  }
+}

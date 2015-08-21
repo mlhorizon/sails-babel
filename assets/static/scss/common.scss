@@ -1,0 +1,18 @@
+$dog: red;
+$pig: blue; 
+.base{
+    .help {
+        background: red;
+    }
+    .pig {
+        width: 20px;
+    }
+    .fuck{
+        color: $dog;
+    }
+
+    &:hover {
+        font-size: 12px;
+    }
+}
+

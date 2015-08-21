@@ -1,0 +1,17 @@
+/**
+ * TechController
+ * 2015-08-21 02:08:15
+ * 
+ * @description :: Server-side logic for managing homes
+ * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+ */
+
+ 
+export default {
+    view (req, res) {
+
+        res.render('tech/tech')
+        
+    }
+}
+

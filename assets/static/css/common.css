@@ -1,0 +1,11 @@
+.base .help {
+  background: red; }
+
+.base .pig {
+  width: 20px; }
+
+.base .fuck {
+  color: red; }
+
+.base:hover {
+  font-size: 12px; }
