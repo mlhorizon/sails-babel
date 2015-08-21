@@ -10,9 +10,12 @@ var gulp = require('gulp')
 var babel = require('./assets/node_modules/gulp-babel')
 var babelify = require('./assets/node_modules/babelify')
 
-var browserify = require('browserify')
+//for broswerify
+var browserify = require('./assets/node_modules/browserify')
 var buffer = require('./assets/node_modules/vinyl-buffer')
 var source = require('./assets/node_modules/vinyl-source-stream')
+
+//for rename dest
 var rename = require('./assets/node_modules/gulp-rename')
 
 //in project dir

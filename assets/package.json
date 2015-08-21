@@ -9,6 +9,7 @@
   "license": "",
   "devDependencies": {
     "babelify": "^6.2.0",
+    "browserify": "^11.0.1",
     "globby": "^2.1.0",
     "gulp-babel": "^5.2.0",
     "gulp-imagemin": "^2.3.0",
