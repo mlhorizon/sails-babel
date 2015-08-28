@@ -3,7 +3,6 @@
     2015-08-21 02:08:10
 -->
 
-
 {% extends 'common/base.html' %}
 {% block css %}
 <!-- @SOURCE@scss: "/static/scss/home/main.scss" -->
@@ -11,11 +10,9 @@
 {% endblock %}
 
 {% block body %}
+{% include 'common/header.html' %}
 
-<p>
-    I am home.html
-</p>
-<a href="/test">go to test page</a>
+
 
 <!-- @SOURCE: "/static/es6/home/main.es6" -->
 <script type="text/javascript" src="/static/js/home/main.js"></script>

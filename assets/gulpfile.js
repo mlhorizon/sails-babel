@@ -11,6 +11,8 @@ var browserify = require('browserify')
 var buffer = require('vinyl-buffer')
 var source = require('vinyl-source-stream')
 
+var babelify = require('babelify')
+
 var globby = require('globby')
 
 var MODE = null
@@ -31,6 +33,14 @@ var PUBLISH_VIEW_PATH = '../views_dist'
 /**
  * COMMON TASK ====================================
  */
+
+var babelOptional = [
+    "es7.asyncFunctions",
+    "es7.objectRestSpread",
+    "es7.functionBind",
+    "es7.comprehensions",
+]
+
 
 // Set Gulp Mode
 function setMode(mode) {
@@ -58,26 +68,54 @@ function setMode(mode) {
 }
 
 
+function browserifyOne(fpath){
+    return browserify({
+          entries: fpath,
+          debug: true,
+          sourceMaps: false,
+          extensions: ['.es6', '.jsx', '.js'],
+          paths: [
+            j(ASSETS_ROOT, 'lib'),
+            j(ASSETS_ROOT, '.tmp/common')
+          ]
+      })
+      /*.transform(babelify.configure({
+        optional: babelOptional
+      }))*/
+      /*.require(require.resolve('babel/polyfill'),{expose: 'babel/polyfill'} )*/ // use regenerators
+      .bundle()
+      .pipe(source(fpath))
+      .pipe(buffer())
+      .pipe(p.rename(function(path) {
+        path['dirname'] = path['dirname'].replace('.tmp', 'js').replace(j(ASSETS_ROOT,'/'), '')
+      }))
+      /*.on('error', function(err){
+        throw Error(err)
+      })*/
+}
+
+
 gulp.task('es6', function() {
-  return gulp.src(j(ASSETS_ROOT, 'es6/**/*.es6'))
+  return gulp.src([
+      j(ASSETS_ROOT, 'es6/**/*.es6'), 
+    ])
     .pipe(p.babel({
-      'sourceMaps': false,
-      optional: [
-        "es7.asyncFunctions",
-        "es7.objectRestSpread"
-      ],
-      modules: 'common'
+      optional: babelOptional,
+      // modules: 'common'
     }))
     .pipe(gulp.dest(
-      j(ASSETS_ROOT, '.tmp_js')
+      j(ASSETS_ROOT, '.tmp')
     ))
+    .on('error', function(err){
+        throw Error(err)
+    })
 
 })
 
 
 gulp.task('tmp_clean', function() {
   return sh.rm('-rf', [
-    j(DEVELOP_ROOT, '.tmp_js'),
+    j(DEVELOP_ROOT, '.tmp'),
     j(DEVELOP_ROOT, 'js'),
     j(DEVELOP_ROOT, 'css')
   ])
@@ -96,7 +134,7 @@ gulp.task('publish_clean', ['tmp_clean'], function() {
 // Delete Raw Assets
 gulp.task('publish_completed_clean', function() {
   return sh.rm('-rf', [
-    j(PUBLISH_ROOT, '.tmp_js'),
+    j(PUBLISH_ROOT, '.tmp'),
     j(PUBLISH_ROOT, 'es6'),
     j(PUBLISH_ROOT, 'scss'),
     j(PUBLISH_ROOT, 'lib'),
@@ -131,27 +169,10 @@ gulp.task('publish_css', function() {
 })
 
 
-function browserifyOne(fpath){
-    return browserify({
-          entries: fpath,
-          debug: true,
-          // sourceMaps: false,
-          extensions: ['.es6', '.jsx'],
-          paths: [j(ASSETS_ROOT, 'lib')]
-      })
-      .bundle()
-      .pipe(source(fpath))
-      .pipe(buffer())
-      .pipe(p.rename(function(path) {
-
-        path['dirname'] = path['dirname'].replace('.tmp_js', 'js').replace(j(ASSETS_ROOT,'/'), '')
-      }))
-}
-
 gulp.task('publish_js', ['es6'], function() {
   // Single entry point to browserify 
 
-    var fileList = globby.sync(j(ASSETS_ROOT, '.tmp_js/**/*.js'))
+    var fileList = globby.sync(j(ASSETS_ROOT, '.tmp/**/*.js'))
     var fpath = null
 
     for(var i in fileList){
@@ -214,7 +235,7 @@ gulp.task('develop_css', function() {
 
 
 gulp.task('develop_js', ['es6'], function() {
-  var fileList = globby.sync(j(ASSETS_ROOT, '.tmp_js/**/*.js'))
+  var fileList = globby.sync(j(ASSETS_ROOT, '.tmp/**/*.js'))
   var fpath = null
   for(var i in fileList){
     fpath = fileList[i]
@@ -230,6 +251,10 @@ gulp.task('develop_js', ['es6'], function() {
 
 })
 
+
+/**
+ * FOR DEVELOP INIT
+ */
 
 gulp.task('develop_init', ['tmp_clean'], function(argument) {
 
@@ -248,7 +273,12 @@ gulp.task('develop', function() {
   setMode('develop')
 
   gulp.watch(j(ASSETS_ROOT, 'scss/**/*.scss'), ['develop_css'])
-  gulp.watch(j(ASSETS_ROOT, 'es6/**/*.es6'), ['develop_js'])
+  gulp.watch([
+    j(ASSETS_ROOT, 'es6/**/*.es6'),
+    // j(ASSETS_ROOT, 'lib/**/*.es6')
+  ], ['develop_js'])
+
+  // gulp.watch(j(ASSETS_ROOT, 'lib/**/*.es6'), ['develop_lib'])
 
 })
 

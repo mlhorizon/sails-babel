@@ -33,14 +33,21 @@ module.exports.routes = {
   ***************************************************************************/
 
   '/': 'HomeController.view',
-    
-  '/essay': 'EssayController.view', 
+
+  
+  '/tech': 'TechController.view', 
 
   '/about': 'AboutController.view', 
 
   '/product': 'ProductController.view', 
 
-  '/tech': 'TechController.view', 
+  '/essay': 'EssayController.view', 
+
+  '/testa': 'TestaController.view', 
+
+  '/gallery': 'GalleryController.view', 
+
+  '/dancer': 'DancerController.view', 
 
   /* @autoGenerateRoute:prepend */
 

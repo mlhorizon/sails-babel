@@ -6,15 +6,10 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-exports['default'] = {
-    view: function view(req, res) {
-        console.log(' ==== welcome home');
-        res.render('home/home');
+export default {
+    view (req, res) {
+        res.render('home/home')
     }
-};
-module.exports = exports['default'];
+}
+

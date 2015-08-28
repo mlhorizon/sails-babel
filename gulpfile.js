@@ -27,6 +27,12 @@ var nodemon = require('nodemon')
 /**
  * COMMON CONFIG =====================================
  */
+var babelOptional = [
+    "es7.asyncFunctions",
+    "es7.objectRestSpread",
+    "es7.functionBind",
+    "es7.comprehensions",
+]
 
 swig.setDefaults({
     // cache: false,
@@ -45,7 +51,8 @@ var tplViewPath = 'views/templateView.html',
 
 var tplEs6Path = 'assets/static/es6/main.es6',
     outEs6Dir = 'assets/static/es6/',
-    outJSDir = 'assets/static/js/'
+    outJSDir = 'assets/static/js/',
+    tmpJSDir = 'assets/static/.tmp'
 
 var tplScssPath = 'assets/static/scss/main.scss',
     outScssDir = 'assets/static/scss',
@@ -69,14 +76,10 @@ function browserifyOne(fpath){
     return browserify({
           entries: fpath,
           debug: true,
-          // sourceMaps: false,
           extensions: ['.es6', '.jsx'],
           transform: [
             babelify.configure({
-                optional: [
-                    "es7.asyncFunctions",
-                    "es7.objectRestSpread"
-                ]
+                optional: babelOptional
             })
           ]
       })
@@ -90,8 +93,9 @@ function renderFile(type, rawName, formatedName, controllerName){
     var now = new Date();
 
     if(type == 'controller'){
-        var fileName = controllerName+'.es6'
-        var outFileName = controllerName + '.js'
+        //Use sails-hook-babel replaced! 
+        var fileName = controllerName+'.js'
+        // var outFileName = controllerName + '.js'
 
         var tplPath = tplControllerPath
         var outTarDir = outControllerDir
@@ -153,20 +157,12 @@ function renderFile(type, rawName, formatedName, controllerName){
                 console.log('output: ' + outPath)
                 // just for controller, trans es6 to js
                 if(type == 'controller'){
-                    gulp.src(outPath)
+                    console.log('Use sails-hook-babel replaced! ')
+                    /*gulp.src(outPath)
                     .pipe(babel())
-                    .pipe(gulp.dest(outTarDir))
+                    .pipe(gulp.dest(outTarDir))*/
                 }else if(type == 'browser_es6'){
 
-                    /*gulp.src(outPath)
-                    .pipe(babel({
-                      'sourceMaps': false,
-                      optional: [
-                        "es7.asyncFunctions",
-                        "es7.objectRestSpread"
-                      ],
-                      modules: 'common'
-                    }))*/
                     browserifyOne(outPath)
                     .pipe(rename(function(path) {
                         
@@ -238,7 +234,9 @@ function generateRoute(rawName, formatedName, controllerName){
 gulp.task('es6', function () {
     //just for backend nodejs trans!
     return gulp.src('./api/**/*.es6')
-        .pipe(babel())
+        .pipe(babel({
+            optional: babelOptional
+        }))
         .pipe(gulp.dest(
             './api'
           )
@@ -334,7 +332,9 @@ gulp.task('remove', function () {
         }else {
             bare = false
         }
-
+        //remove tmp assets dir: .tmp
+        sh.rm('-rf', tmpJSDir)
+        //remove other files
         removeFile(rawName, formatedName, controllerName)
 
         //
@@ -356,11 +356,14 @@ function removeFile(rawName, formatedName, controllerName){
 
     function getFilesToRemove(){
         return [
-            j(outControllerDir, controllerName+'.es6'),
+            //used sails-hook-babel
+            // j(outControllerDir, controllerName+'.es6'),
             j(outControllerDir, controllerName+'.js'),
 
+            //views
             j(outViewsDir, rawName),
 
+            //assets
             j(outEs6Dir, rawName),
             j(outJSDir, rawName),
             j(outScssDir, rawName),
