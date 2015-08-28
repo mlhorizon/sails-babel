@@ -150,8 +150,8 @@ this will clean tmp files and published assets fils
 
 
 # Contact Me
-The docs is very simple, maybe not easily understood.
-So Any questions,
+
+The docs is maybe rougth, simple, not-easily-understood. So Any questions,
 
 Email: 
 
