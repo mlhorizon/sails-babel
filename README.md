@@ -8,34 +8,35 @@
 
 * You can create front-end and back-end easily
 
-*Baed on [Sails](http://sailsjs.org) Application
+* Baed on [Sails](http://sailsjs.org) Application
+
 
 #### [version 0.0.1]
 
 
 ## Some modules used
 
-used sails-hook-babel , detail: [https://github.com/artificialio/sails-hook-babel]
-used swig for template
-used gulp for auto workflow
-used broswerify for js files package
-used es6 in both front and backend
-used babel to transform es6 files to es5
-used scss to get css
-used md5 to construct html/js/css files
+- used sails-hook-babel , detail: [https://github.com/artificialio/sails-hook-babel]
+- used swig for template
+- used gulp for auto workflow
+- used broswerify for js files package
+- used es6 in both front and backend
+- used babel to transform es6 files to es5
+- used scss to get css
+- used md5 to construct html/js/css files
 
-also used sails-mongo and others, not necessary
+- also used sails-mongo and others, not necessary
 
 
 ## Description:
 
 #### dir introduction
 
-controllers: You can use .es6 files in controllers ,by sails-hook-babel
+* controllers: You can use .es6 files in controllers ,by sails-hook-babel
 
-assets/static: static resources, include img, es6, scss... 
+* assets/static: static resources, include img, es6, scss... 
 
-assets/static/es6: es6 files in this dir. and the dir [es6/common]and [lib] is global modules. You can just import its name in es6 files: 
+* assets/static/es6: es6 files in this dir. and the dir [es6/common]and [lib] is global modules. You can just import its name in es6 files: 
  
 like: `import 'AAA'` , not like:  `import '../common/AAA'`
 
@@ -53,7 +54,8 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
 
 1、install sails （use npm -g）
 2、install modules in project root
-    `
+`
+
     "babel-core": "^5.8.22",
 
     "sails-hook-babel": "^5.0.1",
@@ -61,10 +63,12 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
     "sails-mongo": "^0.11.2",
 
     "swig": "^1.4.2"
-    `
+
+`
 
 3、install modules in assets dir:
 `
+
     "babelify": "^6.2.0",
 
     "browserify": "^11.0.1",
@@ -94,6 +98,7 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
     "vinyl-buffer": "^1.0.0",
 
     "vinyl-source-stream": "^1.1.0"
+
 `
 
 
@@ -141,6 +146,6 @@ Email:
 * xwlxyjk@gmail.com
 
 
-QQ: 751933537
+QQ: [751933537]
 
-Best Wishes!
+### Best Wishes!
