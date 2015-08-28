@@ -1,6 +1,6 @@
 # Sails-babel 
 
-*启用ES6和gulp来完成sails项目！
+* 启用ES6和gulp来完成sails项目！
 
 * Use es6 in both backend and frotend!
 
