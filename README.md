@@ -136,6 +136,19 @@ this will use the published assets-dist and views-dist, you can config them in s
 this will clean tmp files and published assets fils
 
 
+* 7、Generate Controller with views and js/css !!
+
+`gulp generate -c {ControllerNam}`
+
+* 8、Generate Controller without views and js/css , bare !!
+
+`gulp generate -c {ControllerNam} --bare`
+
+* 9、Remove Controller !!
+
+`gulp remove -c {ControllerNam}`
+
+
 # Contact Me
 The docs is very simple, maybe not easily understood.
 So Any questions,
