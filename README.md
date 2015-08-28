@@ -1,16 +1,16 @@
 # Sails-babel 
 
-启用ES6和gulp来完成sails项目！
+*启用ES6和gulp来完成sails项目！
 
-Use es6 in both backend and frotend!
+* Use es6 in both backend and frotend!
 
-Use browserify to pack js modules!
+* Use browserify to pack js modules!
 
-You can create front-end and back-end easily
+* You can create front-end and back-end easily
 
-Baed on [Sails](http://sailsjs.org) Application
+*Baed on [Sails](http://sailsjs.org) Application
 
-### [version 0.0.1]
+#### [version 0.0.1]
 
 
 ## Some modules used
@@ -29,7 +29,7 @@ also used sails-mongo and others, not necessary
 
 ## Description:
 
-### dir introduction
+#### dir introduction
 
 controllers: You can use .es6 files in controllers ,by sails-hook-babel
 
@@ -39,13 +39,11 @@ assets/static/es6: es6 files in this dir. and the dir [es6/common]and [lib] is g
  
 like: `import 'AAA'` , not like:  `import '../common/AAA'`
 
-
-### Usage:
+#### Usage:
 
 And the 'AAA' file should be in [es6/common] or [lib]!
 
-
-### Attention:
+#### Attention:
 
 the [lib] is normal es5 js files, but not es6 files. 
 And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
@@ -57,52 +55,69 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
 2、install modules in project root
     `
     "babel-core": "^5.8.22",
+
     "sails-hook-babel": "^5.0.1",
+
     "sails-mongo": "^0.11.2",
+
     "swig": "^1.4.2"
     `
 
 3、install modules in assets dir:
 `
     "babelify": "^6.2.0",
+
     "browserify": "^11.0.1",
+
     "globby": "^2.1.0",
+
     "gulp-babel": "^5.2.0",
+
     "gulp-imagemin": "^2.3.0",
+
     "gulp-load-plugins": "^1.0.0-rc.1",
+
     "gulp-md5-plus": "^0.1.7",
+
     "gulp-minify-css": "^1.2.0",
+
     "gulp-rename": "^1.2.2",
+
     "gulp-sass": "^2.0.4",
+
     "gulp-uglify": "^1.2.0",
+
     "imagemin-pngquant": "^4.1.2",
+
     "shelljs": "^0.5.3",
+
     "vinyl-buffer": "^1.0.0",
+
     "vinyl-source-stream": "^1.1.0"
 `
 
 
 # Sails-babel Usage 使用说明
 
-* 1、Start server in develop pattern:
+* 1、Start server in develop pattern, 
+[in the root dir, and exec:]
 
-in the root dir, and exec:
 `gulp start`
 
 * 2、Start server in Production pattern:
 
-in the root dir, and exec:
 `gulp start-prod` 
+
 this will use the published assets-dist and views-dist, you can config them in sails config files
 
 * 3、init Assets so you can debug in browser
 
-`gulp assets-init
+`gulp assets-init`
 
 
 * 4、Watch Assets so you can develop by runtime compile(scss\es6\...)
 
-`gulp assets-init
+`gulp assets-develop`
 
 
 * 5、Publish assets
@@ -110,17 +125,22 @@ this will use the published assets-dist and views-dist, you can config them in s
 `gulp publish`
 
 * 6、Clean Assets
+
 `gulp clean`
+
 this will clean tmp files and published assets fils
 
 
 # Contact Me
+The docs is very simple, maybe not easily understood.
+So Any questions,
 
-By email: 
+Email: 
 
-xwlxyjk@gmail.com
-xunuoi@163.com [recommend]
+* xunuoi@163.com [recommend]
+* xwlxyjk@gmail.com
 
-Or QQ: 751933537
+
+QQ: 751933537
 
 Best Wishes!
