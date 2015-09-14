@@ -53,7 +53,9 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
 # Sails-babel Install 安装
 
 1、install sails （use npm -g）
+
 2、install modules in project root
+
 `
 
     "babel-core": "^5.8.22",
@@ -138,7 +140,7 @@ this will clean tmp files and published assets fils
 
 * 7、Generate Controller with views and js/css !!
 
-`gulp generate -c {ControllerNam}`
+`gulp generate -c {ControllerName}`
 
 * 8、Generate Controller without views and js/css , bare !!
 
@@ -146,7 +148,15 @@ this will clean tmp files and published assets fils
 
 * 9、Remove Controller !!
 
-`gulp remove -c {ControllerNam}`
+`gulp remove -c {ControllerName}`
+
+* 10、Generate View with Assets: js/css , No Controller!!
+
+`gulp generate -v {ViewName}`
+
+* 11、Remove One View !!
+
+`gulp remove -v {ViewName}`
 
 
 # Contact Me
