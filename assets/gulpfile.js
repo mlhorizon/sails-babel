@@ -79,6 +79,11 @@ function browserifyOne(fpath){
             j(ASSETS_ROOT, '.tmp/common')
           ]
       })
+      .on('error', function(err){
+        var errMessage = err['message'];
+        sh.exec("osascript -e 'display notification \"Browserify Error! \" with title \"Browserify\"'")
+        throw Error(err)
+      })
       /*.transform(babelify.configure({
         optional: babelOptional
       }))*/
@@ -103,12 +108,14 @@ gulp.task('es6', function() {
       optional: babelOptional,
       // modules: 'common'
     }))
+    .on('error', function(err){
+      var errMessage = err['message'];
+      sh.exec("osascript -e 'display notification \"Babel Compile Error! \" with title \"Babel\"'")
+      throw Error(err)
+    })
     .pipe(gulp.dest(
       j(ASSETS_ROOT, '.tmp')
     ))
-    .on('error', function(err){
-        throw Error(err)
-    })
 
 })
 
@@ -230,7 +237,13 @@ gulp.task('publish', ['publish_copy'], function() {
 gulp.task('develop_css', function() {
   return gulp.src(j(ASSETS_ROOT, 'scss/**/*.scss'))
     .pipe(p.sass())
+    .on('error', function(err){
+      var errMessage = err['message'];
+      sh.exec("osascript -e 'display notification \"Scss Compile Error! \" with title \"SCSS\"'")
+      throw Error(err)
+    })
     .pipe(gulp.dest(j(ASSETS_ROOT, 'css')))
+
 })
 
 
@@ -275,7 +288,7 @@ gulp.task('develop', function() {
   gulp.watch(j(ASSETS_ROOT, 'scss/**/*.scss'), ['develop_css'])
   gulp.watch([
     j(ASSETS_ROOT, 'es6/**/*.es6'),
-    // j(ASSETS_ROOT, 'lib/**/*.es6')
+    j(ASSETS_ROOT, 'lib/**/*.js')
   ], ['develop_js'])
 
   // gulp.watch(j(ASSETS_ROOT, 'lib/**/*.es6'), ['develop_lib'])

@@ -256,6 +256,10 @@ gulp.task('generate', function () {
             '--controller': 'generate controller and view and assets',
             '-c': 'same with up' 
         },
+        'view': {
+            '--view': 'generate view and assets',
+            '-v': 'same with up' 
+        },
         'bare': {
             '--bare': 'bare',
             '-b': 'bare'
@@ -263,10 +267,16 @@ gulp.task('generate', function () {
         
     }
     var type = process.argv[3]
-    if(type in cmd['controller']){
+
+    if(type in cmd['controller'] || type in cmd['view']){
         var rawName = process.argv[4]
         var formatedName = formatControllerName(rawName)
         var controllerName = formatedName+'Controller'
+        var isView = false
+        if (type in cmd['view']){
+            isView = true
+            console.log('***Generate View')
+        }
         
         var bare = process.argv[5]
         if(bare in cmd['bare']){
@@ -274,13 +284,13 @@ gulp.task('generate', function () {
         }else {
             bare = false
         }
-        //controller
-        renderFile('controller', rawName, formatedName, controllerName)
+        //controller,if isView, then skip
+        !isView ? renderFile('controller', rawName, formatedName, controllerName) : '';
 
         if(!bare){
 
             //routes auto insert generate by comment: /*@cmd*/
-            generateRoute(rawName, formatedName, controllerName)
+            !isView ? generateRoute(rawName, formatedName, controllerName) : ''
             
             //views
             renderFile('view', rawName, formatedName, controllerName)
@@ -311,8 +321,12 @@ gulp.task('generate', function () {
 gulp.task('remove', function () {
     var cmd = {
         'controller': {
-            '--controller': 'generate controller and view and assets',
+            '--controller': 'remove controller and view and assets',
             '-c': 'same with up' 
+        },
+        'view': {
+            '--view': 'remove view and assets',
+            '-v': 'same with up' 
         },
         'bare': {
             '--bare': 'bare',
@@ -321,11 +335,18 @@ gulp.task('remove', function () {
         
     }
     var type = process.argv[3]
-    if(type in cmd['controller']){
+    if(type in cmd['controller'] || type in cmd['view']){
         var rawName = process.argv[4]
         var formatedName = formatControllerName(rawName)
         var controllerName = formatedName+'Controller'
         
+        var isView = false
+        if (type in cmd['view']){
+            isView = true
+            console.log('***Remove View')
+        }
+
+
         var bare = process.argv[5]
         if(bare in cmd['bare']){
             bare = true
@@ -335,9 +356,7 @@ gulp.task('remove', function () {
         //remove tmp assets dir: .tmp
         sh.rm('-rf', tmpJSDir)
         //remove other files
-        removeFile(rawName, formatedName, controllerName)
-
-        //
+        removeFile(rawName, formatedName, controllerName, isView)
 
         // console.log('Generate Controller File: ' + fileName)
     }else {
@@ -351,11 +370,11 @@ gulp.task('remove', function () {
  * Remove File ===================================
  */
 
-function removeFile(rawName, formatedName, controllerName){
+function removeFile(rawName, formatedName, controllerName, isView){
     // console.log(rawName, formatedName, controllerName)
 
     function getFilesToRemove(){
-        return [
+        var fList = [
             //used sails-hook-babel
             // j(outControllerDir, controllerName+'.es6'),
             j(outControllerDir, controllerName+'.js'),
@@ -368,9 +387,12 @@ function removeFile(rawName, formatedName, controllerName){
             j(outJSDir, rawName),
             j(outScssDir, rawName),
             j(outCSSDir, rawName)
-
-
         ]
+
+        //如果只remove view, 那么跳过controller 
+        isView ? fList.shift() : ''
+
+        return fList
     }
     
     function doRemove(fileList){
@@ -422,7 +444,7 @@ function removeFile(rawName, formatedName, controllerName){
 gulp.task('start', function() {   
     //backend develop 
     gulp.watch('./api/**/*.es6', ['es6'])
-    nodemon('app.js')
+    nodemon('app.js --harmony')
 })
 //develop assets 
 gulp.task('assets-develop', function() {   
@@ -434,7 +456,7 @@ gulp.task('assets-develop', function() {
 
 //production
 gulp.task('start-prod', function() {
-    sh.exec('node app.js --prod')
+    sh.exec('node app.js  --harmony --prod')
 })
 
 
