@@ -66,6 +66,8 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
 
     "swig": "^1.4.2"
 
+    "babel-plugin-closure-elimination": "latest"
+
 `
 
 3、install modules in assets dir:
@@ -103,17 +105,39 @@ And [es6/*] can be both es6 and es5 files. Recommend only .es6 files in es6 dir.
 
 `
 
+!!! Edit the gulp-md5-plus : index.js
+修改gulp-md5-plus的主文件index.js，适配打包寻址的功能（替换为MD5的文件名）
+# code
+`module.exports = function (size, ifile, rootpath) {
+    size = size | 0;
+    rootpath = rootpath || '
+
+    ...
+})
+        var match_file_path = path.join(rootpath, relativepath)
+        var md5_filename = filename.split('.').map(function(item, i, arr){
+            return i == arr.length-2 ? item + '_'+ d : item;
+        }).join('.');
+        var relative_dir = path.relative(file.base, dir)
+        var md5_file_path = path.join(rootpath,relative_dir, md5_filename)
+        console.log('debug: gulp-md5-plus: \n', md5_file_path)
+        
+查找全部，并替换：replace all with：
+
+replace(new RegExp(match_file_path), md5_file_path);
+`
+
 
 # Sails-babel Usage 使用说明
 
 * 1、Start server in develop pattern, 
 [in the root dir, and exec:]
 
-`gulp start`
+`gulp s`
 
-* 2、Start server in Production pattern:
+* 2、Start server in Production pattern, use [PM2]:
 
-`gulp start-prod` 
+`gulp s-prod` , `gulp rs-prod` => restart project in production
 
 this will use the published assets-dist and views-dist, you can config them in sails config files
 
@@ -122,9 +146,9 @@ this will use the published assets-dist and views-dist, you can config them in s
 `gulp assets-init`
 
 
-* 4、Watch Assets so you can develop by runtime compile(scss\es6\...)
+* 4、Watch Assets so you can develop by runtime compile(scss\es6\...), watching files...
 
-`gulp assets-develop`
+`gulp assets`
 
 
 * 5、Publish assets
@@ -137,24 +161,28 @@ this will use the published assets-dist and views-dist, you can config them in s
 
 this will clean tmp files and published assets fils
 
+* 7. auto deploy assets , which use shell `gulp publish` and `gulp rs-prod`:
 
-* 7、Generate Controller with views and js/css !!
+`gulp deploy`
+
+
+* 8、Generate Controller with views and js/css !!
 
 `gulp generate -c {ControllerName}`
 
-* 8、Generate Controller without views and js/css , bare !!
+* 9、Generate Controller without views and js/css , bare !!
 
 `gulp generate -c {ControllerNam} --bare`
 
-* 9、Remove Controller !!
+* 10、Remove Controller !!
 
 `gulp remove -c {ControllerName}`
 
-* 10、Generate View with Assets: js/css , No Controller!!
+* 11、Generate View with Assets: js/css , No Controller!!
 
 `gulp generate -v {ViewName}`
 
-* 11、Remove One View !!
+* 12、Remove One View !!
 
 `gulp remove -v {ViewName}`
 
