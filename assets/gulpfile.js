@@ -1,5 +1,12 @@
 'use strict'
 
+/**
+ * CONFIG CLOSURE IN package.json
+ * "babel": {
+    "plugins": ["closure-elimination"]
+    },
+ */
+
 var j = require('path').join
 var sh = require("shelljs")
 
@@ -42,6 +49,14 @@ var babelOptional = [
 ]
 
 
+//restart develop task
+function restart_develop_assets (argument) {
+  //restart
+  sh.exec('gulp develop')
+  process.exit()
+}
+
+
 // Set Gulp Mode
 function setMode(mode) {
 
@@ -79,24 +94,29 @@ function browserifyOne(fpath){
             j(ASSETS_ROOT, '.tmp/common')
           ]
       })
-      .on('error', function(err){
-        var errMessage = err['message'];
-        sh.exec("osascript -e 'display notification \"Browserify Error! \" with title \"Browserify\"'")
-        throw Error(err)
-      })
       /*.transform(babelify.configure({
         optional: babelOptional
       }))*/
-      /*.require(require.resolve('babel/polyfill'),{expose: 'babel/polyfill'} )*/ // use regenerators
+      // use regenerators and async...
+      /*.require(
+        require.resolve('babel/polyfill'),
+        {expose: 'babel/polyfill'} 
+      ) */
       .bundle()
       .pipe(source(fpath))
       .pipe(buffer())
       .pipe(p.rename(function(path) {
         path['dirname'] = path['dirname'].replace('.tmp', 'js').replace(j(ASSETS_ROOT,'/'), '')
       }))
-      /*.on('error', function(err){
-        throw Error(err)
-      })*/
+      .on('error', function(err){
+        var errMessage = err['message'];
+        sh.exec("osascript -e 'display notification \"Browserify Error! \" with title \"Browserify\"'")
+        
+        console.error(err)
+
+        restart_develop_assets()
+      })
+
 }
 
 
@@ -110,8 +130,12 @@ gulp.task('es6', function() {
     }))
     .on('error', function(err){
       var errMessage = err['message'];
-      sh.exec("osascript -e 'display notification \"Babel Compile Error! \" with title \"Babel\"'")
-      throw Error(err)
+      sh.exec("osascript -e 'display notification \"Babel Compile Error: es6\" with title \"Gulp Error\"'")
+
+      console.error(err)
+      //restart
+      restart_develop_assets()
+
     })
     .pipe(gulp.dest(
       j(ASSETS_ROOT, '.tmp')
@@ -197,7 +221,7 @@ gulp.task('publish_js', ['es6'], function() {
         .pipe(gulp.dest(ASSETS_ROOT))
         .on('error', function(err) {
             throw Error(err)
-          })
+        })
     }
 
 })
@@ -239,8 +263,11 @@ gulp.task('develop_css', function() {
     .pipe(p.sass())
     .on('error', function(err){
       var errMessage = err['message'];
-      sh.exec("osascript -e 'display notification \"Scss Compile Error! \" with title \"SCSS\"'")
-      throw Error(err)
+      sh.exec("osascript -e 'display notification \"SCSS Compile Error\" with title \"Gulp Error\"'")
+
+      console.error(err)
+      //restart
+      restart_develop_assets()
     })
     .pipe(gulp.dest(j(ASSETS_ROOT, 'css')))
 
@@ -256,7 +283,13 @@ gulp.task('develop_js', ['es6'], function() {
     browserifyOne(fpath)
     .pipe(gulp.dest(ASSETS_ROOT))
     .on('error', function(err) {
-      throw Error(err)
+      var errMessage = err['message'];
+      sh.exec("osascript -e 'display notification \"es6 Compile Error! \" with title \"develop_js\"'")
+
+      console.error(err)
+      //restart 
+      restart_develop_assets()
+
     })
   }
 

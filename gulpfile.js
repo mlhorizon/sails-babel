@@ -21,7 +21,6 @@ var rename = require('./assets/node_modules/gulp-rename')
 //in project dir
 var swig = require('swig')
 var sh = require('shelljs')
-var nodemon = require('nodemon')
 
 
 /**
@@ -201,7 +200,7 @@ function generateRoute(rawName, formatedName, controllerName){
         var cmd = mr[1], cmd_way = mr[2]
         // console.log(cmd, cmd_way)
         if(cmd == 'autoGenerateRoute' && cmd_way == 'prepend'){
-            var newRouteStr = "'\/"+rawName+"': '"+controllerName+".view'"
+            var newRouteStr = "'\/"+rawName+"': '"+controllerName+".index'"
             if(routeFileStr.match(newRouteStr)){
                 console.log('!!!Route has existed: '+newRouteStr+', So can not generated route.')
                 return
@@ -399,7 +398,6 @@ function removeFile(rawName, formatedName, controllerName, isView){
         sh.rm('-rf', fileList)
         console.log('\n\n>>Tip: \n\nYou should clear its route in config/routes.js manualy.')
         console.log('\n', 'All Files Removed!!!\n\n')
-        process.exit()
 
         return true
     }
@@ -418,8 +416,8 @@ function removeFile(rawName, formatedName, controllerName, isView){
             // return
             if((cmd == 'y') || (cmd == 'yes')){
                 
-
                 doRemove(files)
+                process.exit()
 
             }else {
 
@@ -440,25 +438,27 @@ function removeFile(rawName, formatedName, controllerName, isView){
  * Sever Start ===================================
  */
 
-//develop 
-gulp.task('start', function() {   
+//start develop
+gulp.task('s', function() {  
+    var nodemon = require('nodemon') 
     //backend develop 
     gulp.watch('./api/**/*.es6', ['es6'])
-    nodemon('app.js --harmony')
+    nodemon('app.js')
 })
 //develop assets 
-gulp.task('assets-develop', function() {   
+gulp.task('assets', function() {   
     //backend develop 
     sh.cd('assets')
     sh.exec('gulp develop')
 })
 
+/**
+ * Auto deploy prodution
+ */
 
-//production
-gulp.task('start-prod', function() {
-    sh.exec('node app.js  --harmony --prod')
+gulp.task('deploy', function() {    
+    sh.exec('git pull && gulp publish && gulp rs-prod')
 })
-
 
 /**
  * Assets Publish ===================================
@@ -470,6 +470,21 @@ gulp.task('publish', function() {
     // sh.cd('-') --> this is error ,for the build process async!
 })
 
+
+/**
+ *  RESTART PRODUCTION
+ */
+gulp.task('rs-prod', function() {    
+    sh.exec('pm2 restart karat -x -- --prod')
+    // sh.cd('-') --> this is error ,for the build process async!
+})
+/**
+ * START PRODUCTION IN SERVER HOST
+ */
+gulp.task('s-prod', function() {    
+    sh.exec('pm2 start ./app.js --name karat -x -- --prod')
+    // sh.cd('-') --> this is error ,for the build process async!
+})
 
 /**
  * Assets Init ===================================
@@ -490,4 +505,34 @@ gulp.task('clean', function() {
     sh.cd('assets')
     sh.exec('gulp publish_clean')
     // sh.cd('-') --> this is error ,for the build process async!
+})
+
+/**
+ * Quick Post To Git
+ */
+
+gulp.task('post', function(){
+    repl.start({
+        prompt: "Are you sure to quick commit and push ? y/n >",
+        input: process.stdin,
+        output: process.stdout,
+        eval: function (cmd, context, filename, callback) {
+            var cmd = cmd.toLowerCase().replace(/[\s\b\n\r\t\f]+/g, '')
+            var d = new Date()
+            if((cmd == 'y') || (cmd == 'yes')){
+                sh.exec('git add . && git commit -am"Quic Post To Git, Time: '+d.toLocaleDateString() + '  '+d.toLocaleTimeString()+'" && git push')
+                process.exit()
+
+            }else {
+
+                console.log('Quick Post Code to git has been Canceled')
+                process.exit()
+            }
+
+          // callback(null, result)
+        }
+    })
+    .on('exit', function(){
+        process.exit()
+    })
 })
